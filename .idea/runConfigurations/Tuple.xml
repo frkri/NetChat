@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Tuple" type="CompoundRunConfigurationType">
+    <toRun name="server" type="Application" />
+    <toRun name="client" type="Application" />
+    <toRun name="client-1" type="Application" />
+    <method v="2" />
+  </configuration>
+</component>
