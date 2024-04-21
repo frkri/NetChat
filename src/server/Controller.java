@@ -5,7 +5,7 @@ import chat.ChatServer;
 import chat.IChatServerCallback;
 import common.Util.Connection;
 import message.Message;
-import message.SystemMessage;
+import message.MessageType;
 
 public class Controller implements IChatServerCallback {
     private final View frame;
@@ -57,7 +57,9 @@ public class Controller implements IChatServerCallback {
     @Override
     public void handleNewConnection(ChatClient client) {
         System.out.println("New connection from " + client);
-        frame.getLog().addMessage(new SystemMessage("New connection from " + client));
+        var message = new Message(MessageType.System, "New connection from " + client);
+        frame.getLog().addMessage(message);
+        chatServer.broadcastMessage(message, client);
 
         frame.getLbActiveClientsCount().setText(Integer.toString(chatServer.getClientCount()));
     }
@@ -65,17 +67,21 @@ public class Controller implements IChatServerCallback {
     @Override
     public void handleCloseConnection(ChatClient client) {
         System.out.println("Connection closed from " + client);
-        frame.getLog().addMessage(new SystemMessage("Connection closed from " + client));
+        frame.getLog().addMessage(new Message(MessageType.System, "Connection closed from " + client));
         frame.getLbActiveClientsCount().setText(Integer.toString(chatServer.getClientCount()));
     }
 
     @Override
     public void handleNewMessage(Message message, ChatClient source) {
+        System.out.println("New message from " + source + ": " + message);
+        if (message.getType() != MessageType.User)
+            return; // Basic check to prevent system messages from being broadcast from clients
         chatServer.broadcastMessage(message, source);
         frame.getLog().addMessage(message);
     }
 
     @Override
     public void handleSendMessage(Message message, ChatClient source) {
+        // Do nothing
     }
 }

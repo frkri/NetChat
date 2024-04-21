@@ -1,19 +1,21 @@
 package chat;
 
 import message.Message;
+import yaff.YaffException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
+import static message.YaffMessage.YAFF_MESSAGE;
+
 public class ChatClient implements Runnable {
     private final Socket endpoint;
-    private final PrintWriter writer;
-    private final BufferedReader reader;
+    private final OutputStream out;
+    private final InputStream in;
     private final IChatCallback callback;
     private final Thread thread;
 
@@ -21,8 +23,8 @@ public class ChatClient implements Runnable {
         this.callback = callback;
         this.endpoint = endpoint;
         this.thread = new Thread(this);
-        writer = new PrintWriter(this.endpoint.getOutputStream(), true);
-        reader = new BufferedReader(new InputStreamReader(this.endpoint.getInputStream()));
+        this.out = endpoint.getOutputStream();
+        this.in = endpoint.getInputStream();
 
         thread.start();
     }
@@ -33,21 +35,16 @@ public class ChatClient implements Runnable {
 
     public void run() {
         try {
-            while (!thread.isInterrupted()) {
-                var content = reader.readLine();
-                if (content == null) {
-                    callback.handleCloseConnection(this);
-                    stopClient();
-                    break;
-                }
-
-                callback.handleNewMessage(new Message(content), this);
+            while (!thread.isInterrupted() && !endpoint.isClosed()) {
+                var message = (Message) YAFF_MESSAGE.deserialize(in);
+                callback.handleNewMessage(message, this);
             }
-        } catch (SocketException e) {
-            // Expected result caused by stopClient()
-            System.out.println("Closed socket");
+        } catch (YaffException | SocketException e) {
+            // Client could be sending invalid data or has disconnected (stopClient called)
+            System.out.println("Client disconnected");
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
             callback.handleCloseConnection(this);
             stopClient();
         }
@@ -63,7 +60,11 @@ public class ChatClient implements Runnable {
     }
 
     public void sendMessage(Message message) {
-        writer.println(message.getContent());
+        try {
+            YAFF_MESSAGE.serialize(message, out);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         callback.handleSendMessage(message, this);
     }
 }
