@@ -62,7 +62,7 @@ public class ChatClient implements Runnable {
     public void sendMessage(Message message) {
         try {
             YAFF_MESSAGE.serialize(message, out);
-        } catch (IOException e) {
+        } catch (IOException | YaffException e) {
             e.printStackTrace();
         }
         callback.handleSendMessage(message, this);

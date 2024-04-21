@@ -18,6 +18,7 @@ public class StringSerializer implements IYaffSerializer<Message> {
             throw new IllegalArgumentException("Message content cannot contain delimiter");
 
         var parts = new String[]{message.getType().toString(), String.valueOf(message.getDate().toEpochSecond(ZONE_OFFSET)), message.getContent()};
+        System.out.println("Using StringSerializer to serialize message");
         return String.join(DELIMITER, parts).getBytes();
     }
 
@@ -27,6 +28,7 @@ public class StringSerializer implements IYaffSerializer<Message> {
         if (parts.length != 3) throw new YaffException("Invalid message format");
 
         var date = LocalDateTime.ofEpochSecond(Long.parseLong(parts[1]), 0, ZONE_OFFSET);
+        System.out.println("Using StringSerializer to deserialize message");
         return new Message(MessageType.valueOf(parts[0]), date, parts[2]);
     }
 

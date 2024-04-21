@@ -1,7 +1,7 @@
 package message.serializer;
 
 public enum ContentType {
-    Json,
+    // Json, todo
     String,
     Object
 }

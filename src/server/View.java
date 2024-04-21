@@ -1,6 +1,7 @@
 package server;
 
 import message.Log;
+import message.serializer.ContentType;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -23,6 +24,7 @@ public class View extends JFrame {
     private JPanel ServerClients;
     private JLabel lbActiveClientsCount;
     private JScrollPane scrollPane;
+    private JComboBox<ContentType> comboBoxYaffFormat;
 
     public View() {
         initialize();
@@ -40,6 +42,7 @@ public class View extends JFrame {
         contentPane.add(getServerControl());
         contentPane.add(getChatLog());
         contentPane.add(getServerClients());
+        contentPane.add(getComboBoxYaffFormat());
     }
 
     protected Log getLog() {
@@ -92,7 +95,7 @@ public class View extends JFrame {
     private JLabel getLbActiveClients() {
         if (lbActiveClients == null) {
             lbActiveClients = new JLabel("Active Clients");
-            lbActiveClients.setBounds(21, 0, 110, 14);
+            lbActiveClients.setBounds(18, 11, 110, 14);
             lbActiveClients.setHorizontalAlignment(SwingConstants.CENTER);
         }
         return lbActiveClients;
@@ -134,7 +137,7 @@ public class View extends JFrame {
     private JPanel getServerClients() {
         if (ServerClients == null) {
             ServerClients = new JPanel();
-            ServerClients.setBounds(414, 160, 149, 90);
+            ServerClients.setBounds(414, 184, 149, 66);
             ServerClients.setLayout(null);
             ServerClients.add(getLbActiveClients());
             ServerClients.add(getLbActiveClientsCount());
@@ -147,7 +150,7 @@ public class View extends JFrame {
             lbActiveClientsCount = new JLabel("0");
             lbActiveClientsCount.setFont(new Font("Tahoma", Font.PLAIN, 30));
             lbActiveClientsCount.setHorizontalAlignment(SwingConstants.CENTER);
-            lbActiveClientsCount.setBounds(10, 37, 129, 42);
+            lbActiveClientsCount.setBounds(10, 22, 129, 42);
         }
         return lbActiveClientsCount;
     }
@@ -160,5 +163,13 @@ public class View extends JFrame {
             scrollPane.setViewportView(getLog());
         }
         return scrollPane;
+    }
+
+    protected JComboBox<ContentType> getComboBoxYaffFormat() {
+        if (comboBoxYaffFormat == null) {
+            comboBoxYaffFormat = new JComboBox<>();
+            comboBoxYaffFormat.setBounds(424, 151, 128, 22);
+        }
+        return comboBoxYaffFormat;
     }
 }

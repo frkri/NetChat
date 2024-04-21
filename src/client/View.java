@@ -1,6 +1,7 @@
 package client;
 
 import message.Log;
+import message.serializer.ContentType;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -23,6 +24,7 @@ public class View extends JFrame {
     private JButton btnMessageSend;
     private JPanel MessageSender;
     private JScrollPane scrollPane;
+    private JComboBox<ContentType> comboBoxYaffFormat;
 
     public View() {
         initialize();
@@ -40,6 +42,7 @@ public class View extends JFrame {
         contentPane.add(getServerControl());
         contentPane.add(getChatLog());
         contentPane.add(getMessageSender());
+        contentPane.add(getComboBoxYaffFormat());
     }
 
     protected Log getLog() {
@@ -141,7 +144,7 @@ public class View extends JFrame {
     private JPanel getMessageSender() {
         if (MessageSender == null) {
             MessageSender = new JPanel();
-            MessageSender.setBounds(285, 172, 128, 54);
+            MessageSender.setBounds(285, 196, 128, 54);
             MessageSender.setLayout(null);
             MessageSender.add(getTextFieldMessage());
             MessageSender.add(getBtnMessageSend());
@@ -157,5 +160,13 @@ public class View extends JFrame {
             scrollPane.setViewportView(getLog());
         }
         return scrollPane;
+    }
+
+    protected JComboBox<ContentType> getComboBoxYaffFormat() {
+        if (comboBoxYaffFormat == null) {
+            comboBoxYaffFormat = new JComboBox<>();
+            comboBoxYaffFormat.setBounds(285, 152, 128, 22);
+        }
+        return comboBoxYaffFormat;
     }
 }
